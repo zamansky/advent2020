@@ -22,4 +22,13 @@
 
 (def part2-numbers-again (set  (filter  (fn [x]  (some #(= (- 2020 x) %) twosum)) data)))
 (def part2-again (reduce * part2-numbers-again))
-  
+
+(comment list comprehension version
+(for [i data
+      j data
+      k data 
+      :when (= 2020 (+ i j k))
+      ]
+  [i j k(* i j k)]
+  )
+)
