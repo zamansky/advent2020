@@ -8,9 +8,15 @@
   "string->int"
   (biginteger (re-find  #"\-?\d+" s )))
 
-(defn parse-int [s]
+
+
+(defn parse-int
   "string->int"
-  (Integer. (re-find  #"\-?\d+" s )))
+  ([s] (parse-int s nil))
+  ([s default]
+  (try (Integer. (re-find  #"\-?\d+" s ))
+       (catch Exception r default))
+  ))
 
 
 (defn abs [n] (max n (- n)))

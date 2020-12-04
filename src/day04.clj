@@ -19,7 +19,9 @@
          (str/split item #"[ \n]" )
          (map #(str/split % #":"))
          (map (fn [ [a b]] [(keyword "day04"  a) b]))))
-         
+
+(def z (str->pairs "one:two three:four"))
+z
 
 (def data-map (->>
                (map str->pairs data)
@@ -36,27 +38,29 @@
          (keyword "day04" "ecl")
          (keyword "day04" "pid")}) ;; cid is optional
 
+(def field-strings ["byr" "iyr" "eyr" "hgt" "hcl" "ecl" "pid"] ) ;; cid is optional 
+(def fields  (set  (map #(keyword "day04" %) field-strings))) 
 
-  (defn part1 [data-map]
+
+(defn part1 [data-map]
     (->> data-map
          (filter #(= (set (keys  %)) fields))
-         count
-         )))
+         count))
 
-(part1 data-map)
+
+
 (defn hgt-test [s]
   (let [[_ num-string units] (re-find #"([0-9]+)(cm|in)" s)
-        num (u/try-parse-int num-string)
+        num (u/parse-int num-string)
         ]
     (cond (= units "cm") (and (>= num 150) (<= num 193))
           (= units "in") (and (>= num 59) (<= num 76))
-          )
-  ))
+          )))
 
 
-(s/def ::byr (s/and string? #(>= (u/try-parse-int %) 1920) #(<= (u/try-parse-int %) 2002)))
-(s/def ::iyr (s/and string? #(>= (u/try-parse-int %) 2010) #(<= (u/try-parse-int %) 2020)))
-(s/def ::eyr (s/and string? #(>= (u/try-parse-int %) 2020) #(<= (u/try-parse-int %) 2030)))
+(s/def ::byr (s/and string? #(>= (u/parse-int %) 1920) #(<= (u/parse-int %) 2002)))
+(s/def ::iyr (s/and string? #(>= (u/parse-int %) 2010) #(<= (u/parse-int %) 2020)))
+(s/def ::eyr (s/and string? #(>= (u/parse-int %) 2020) #(<= (u/parse-int %) 2030)))
 (s/def ::hgt (s/and string? hgt-test))
 (s/def ::hcl (s/and string? #(re-find #"#[0-9a-f]{6}" %)))
 (s/def ::ecl (s/and string? #(re-find #"amb|blu|brn|gry|grn|hzl|oth" %)))
@@ -69,5 +73,7 @@
    ))
 
 
+(part1 data-map)
 (count (filter true? (map #(s/valid? ::passport %) data-map)))
+
 
