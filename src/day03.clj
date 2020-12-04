@@ -30,15 +30,15 @@
   (->> (build-candidates data slope)
        (map (partial test-candidate data))
        (filter #(= % \#))
-       (count)
-       )))
+       count
+       ))
 
-
+(part1 data [3 1])
 (def slopes [ [1 1] [3 1] [5 1] [7 1] [1 2]])
 
 (defn part2 [data slopes]
 (->>
- (map (partial part1 data`) slopes)
+ (map (partial part1 data) slopes)
  (reduce *)
  ))
 
