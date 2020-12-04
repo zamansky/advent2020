@@ -9,50 +9,30 @@
 (def data (-> "day04.dat"
               io/resource
               slurp
-              (str/split  #"\n\n")
-              ))
-
-
+              (str/split  #"\n\n")))
 
 (defn str->pairs [item]
-  (->> 
-         (str/split item #"[ \n]" )
-         (map #(str/split % #":"))
-         (map (fn [ [a b]] [(keyword "day04"  a) b]))))
-
-(def z (str->pairs "one:two three:four"))
-z
-
-(def data-map (->>
-               (map str->pairs data)
-               (map #( into {} %))
-               (map #(dissoc % :day04/cid)) ;; take out cid since it's optional
-               ))
+  (->> (str/split item #"[ \n]" )
+       (map #(str/split % #":"))
+       (map (fn [ [a b]] [(keyword "day04"  a) b]))))
 
 
-(def fields #{(keyword "day04" "byr")
-         (keyword "day04" "iyr")
-         (keyword "day04" "eyr")
-         (keyword "day04" "hgt")
-         (keyword "day04" "hcl")
-         (keyword "day04" "ecl")
-         (keyword "day04" "pid")}) ;; cid is optional
+(def data-map (->> (map str->pairs data)
+                   (map #( into {} %))
+                   (map #(dissoc % :day04/cid)) ;; take out cid since it's optional))
 
 (def field-strings ["byr" "iyr" "eyr" "hgt" "hcl" "ecl" "pid"] ) ;; cid is optional 
 (def fields  (set  (map #(keyword "day04" %) field-strings))) 
 
 
 (defn part1 [data-map]
-    (->> data-map
-         (filter #(= (set (keys  %)) fields))
-         count))
-
-
+  (->> data-map
+       (filter #(= (set (keys  %)) fields))
+       count))
 
 (defn hgt-test [s]
   (let [[_ num-string units] (re-find #"([0-9]+)(cm|in)" s)
-        num (u/parse-int num-string)
-        ]
+        num (u/parse-int num-string)]
     (cond (= units "cm") (and (>= num 150) (<= num 193))
           (= units "in") (and (>= num 59) (<= num 76))
           )))
@@ -66,13 +46,9 @@ z
 (s/def ::ecl (s/and string? #(re-find #"amb|blu|brn|gry|grn|hzl|oth" %)))
 (s/def ::pid (s/and string? #(re-find #"^[0-9]{9}$" % )))
 (s/def ::cid string?)
-(s/def ::passport
-  (s/keys
-   :req [::byr ::iyr ::eyr ::hgt ::hcl ::ecl ::pid]
-   :opt [::cid]
-   ))
-
-
+(s/def ::passport (s/keys
+                   :req [::byr ::iyr ::eyr ::hgt ::hcl ::ecl ::pid]
+                   :opt [::cid]))
 (part1 data-map)
 (count (filter true? (map #(s/valid? ::passport %) data-map)))
 
