@@ -67,7 +67,7 @@
 
 (def vals {\B 1 \F 0 \R  1 \L 0})
 
-(def seatint(map #(get vals %) seat)))
+(def seatint(map #(get vals %) seat))
 (defn exp [a b] (reduce * (repeat b a)))
 (reduce + (map-indexed (fn [i v] (* v (exp 2 i))) seatint))
 
@@ -81,3 +81,5 @@
   )
 
 (find-seat-better seat)
+
+(read-string "2r001101")
