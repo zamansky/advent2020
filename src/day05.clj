@@ -63,3 +63,21 @@
 
 (reverse  (take 5 seat))
 
+
+
+(def vals {\B 1 \F 0 \R  1 \L 0})
+
+(def seatint(map #(get vals %) seat)))
+(defn exp [a b] (reduce * (repeat b a)))
+(reduce + (map-indexed (fn [i v] (* v (exp 2 i))) seatint))
+
+(defn find-seat-better [s]
+  (->> s
+       reverse
+       (map #(get vals %))
+       (map-indexed (fn [i v] (* v (exp 2 i))))
+       (reduce +)
+   )
+  )
+
+(find-seat-better seat)
