@@ -3,11 +3,11 @@
             [clojure.string :as str]
             [utils :as u]
             [hashp.core]
-
             [clojure.set :as set]))
 
-(defn make-count-color [s]
-  "ex: 1 bright white bag -> [:brightwight 1]" 
+(defn make-count-color 
+  "ex: 1 bright white bag -> [:brightwight 1]"
+  [s]
   (let [l (str/split s #" ")
         count (u/parse-int (first l))
         color (keyword (str/join ""  (take 2 (drop 1 l))))
@@ -15,16 +15,18 @@
     [color count]
     ))
 
-(defn parse-right [b]
+(defn parse-right
   " color count bags, color count bags... -> [[:color count][:color count]...]"
+  [b]
   (let [right (take 4  (str/split b #", "))
         c (map make-count-color right)
     ]
     c)
   )
 
-(defn parse-line [line]
+(defn parse-line
   " from string --> [ [:color count] [:color count] ... ] :first-color-in-string]"
+  [line]
   (let [ [a b] (str/split line #" contain ")
         left (keyword (str/join ""  (take 2 (str/split a #" "))))
         right (parse-right b)
@@ -34,8 +36,9 @@
   )
 
 
-(defn add-to-graph-part1  [graph [smallers bigger]]
+(defn add-to-graph-part1
   "adds a list representing a line from input to the graph but reverse the edges"
+  [graph [smallers bigger]]
   (loop [g graph s (first smallers) r (rest smallers)]
     (let [color (first s)
           count (second s)]
@@ -48,8 +51,9 @@
 
 
 
-(defn bfs1 [graph  fronteir visited]
+(defn bfs1
   "breadth first search - use on the reversed edges from the part 1 graph"
+  [graph  fronteir visited]
   (let [current (first fronteir)
         neighbors (map first (filter #(not (contains? visited (first %))) (current graph)))
         new-visited (into visited neighbors)
@@ -63,15 +67,17 @@
   )
 
 
-(defn add-to-graph-part2 [graph line]
+(defn add-to-graph-part2
   "just adds the line to the graph - doesn't reverse edges"
+  [graph line]
   (assoc graph (second line) (first line)) 
   )
 
 
 
-(defn bfs2 [graph current visited level]
+(defn bfs2
   "recursive bfs - do on the non-reversed edges for part 2"
+  [graph current visited level]
   (let [raw-neighbors (current graph)
         neighbors (map first raw-neighbors)
         ]
@@ -86,7 +92,7 @@
 
 
 (def data-raw 
-  (-> "day07.dat"
+  (-> "sample07.dat"
       io/resource
       slurp
       str/split-lines
@@ -97,13 +103,12 @@
 
 (def data-list (map parse-line data))
 
-(def graph-part1 ( reduce add-to-graph {} data-list))
+(def graph-part1 (reduce add-to-graph-part1 {} data-list))
 (def graph-part2 (reduce add-to-graph-part2 {} data-list))
 
-(count (bfs1 graph [:shinygold]  #{}))
+(count (bfs1 graph-part1 [:shinygold]  #{}))
 ;; 233
 
 (bfs2 graph-part2 :shinygold  #{} 0)
 ;; 421550
-
 
