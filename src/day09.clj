@@ -1,7 +1,8 @@
 (ns day09
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [utils :as u]))
+            [utils :as u]
+            [hashp.core]))
 
 (def data (->> "day09.dat"
                io/resource
@@ -39,3 +40,4 @@
 (filter #(not (nil? %)) (map test2 ( partition x 1 data)))
 ))
 
+(def table (atom ))
