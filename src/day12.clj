@@ -3,7 +3,7 @@
             [clojure.string :as str]
             [hashp.core]))
 
-(def data (->> "day12.dat"
+(def data (->> "sample12.dat"
               io/resource
               slurp
               str/split-lines
@@ -15,15 +15,18 @@
 (def dirs { 0 :E 90 :N 180 :W 270 :S})
 (def state {:pos [0 0] :dir 0 :waypoint [-10 1]})
 
-(def rules-part1 {:E (fn [{:keys [pos dir] :as state} opt] (assoc state :pos (map + pos (map #(* opt %) (:E vals)))))
-           :W (fn [{:keys [pos dir] :as state} opt] (assoc state :pos (map + pos (map #(* opt %) (:W vals)))))
-           :N (fn [{:keys [pos dir] :as state} opt] (assoc state :pos (map + pos (map #(* opt %) (:N vals)))))
-           :S (fn [{:keys [pos dir] :as state} opt] (assoc state :pos (map + pos (map #(* opt %) (:S vals)))))
-           :F (fn [{:keys [pos dir] :as state} opt] (assoc state :pos (map + pos (map #(* opt %) ((get dirs dir) vals)))))
-           :L (fn [{:keys [pos dir] :as state} opt] (assoc state :dir (mod (+ dir opt) 360)))
-           :R (fn [{:keys [pos dir] :as state} opt] (assoc state :dir (mod (- dir opt) 360)))
 
-           }
+
+(def rules-part1
+  {:E (fn [{:keys [pos dir] :as state} opt] (assoc state :pos (map + pos (map #(* opt %) (:E vals)))))
+   :W (fn [{:keys [pos dir] :as state} opt] (assoc state :pos (map + pos (map #(* opt %) (:W vals)))))
+   :N (fn [{:keys [pos dir] :as state} opt] (assoc state :pos (map + pos (map #(* opt %) (:N vals)))))
+   :S (fn [{:keys [pos dir] :as state} opt] (assoc state :pos (map + pos (map #(* opt %) (:S vals)))))
+   :F (fn [{:keys [pos dir] :as state} opt] (assoc state :pos (map + pos (map #(* opt %) ((get dirs dir) vals)))))
+   :L (fn [{:keys [pos dir] :as state} opt] (assoc state :dir (mod (+ dir opt) 360)))
+   :R (fn [{:keys [pos dir] :as state} opt] (assoc state :dir (mod (- dir opt) 360)))
+   
+   }
   )
 (def part1-ans (->>
  data
