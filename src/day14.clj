@@ -83,13 +83,19 @@
                            {:keys [instr dst param] :as instr}]
   (cond
     (= instr :mask) (assoc state :mask param)
-    (= instr :mem)  (assoc-in state [:mem dst]
-                              (-> param
-                                  read-string
-                                  (bit-or or-mask)
-                                  (bit-and and-mask)))
-    ))
+    (= instr :mem) (let [bin-mem (dst->binary-string dst )
+                         bin-mem-masked (apply-mask bin-mem mask)
+                         mem-candidates (flatten (build-nums bin-mem-masked))
+                         ]
+                     (reduce (fn [state candidate]
+                               (assoc-in state [:mem candidate] (read-string param)))
+                             state mem-candidates
+                             )
+                     )))
 
 
 
   
+(def part2-machine (reduce part2-process-instr state data))
+(def mem2 (:mem part2-machine))
+(def part2-ans (apply + (map second mem2)))
