@@ -3,7 +3,7 @@
             [clojure.string :as str]
             [hashp.core]))
 
-(def raw-data  (-> "sample22.dat"
+(def raw-data  (-> "day22.dat"
                    io/resource
                    slurp
                    (str/split #"\n\n")
@@ -45,15 +45,14 @@
           p2 (first p2deck)
           p2s (rest p2deck)
           p2count (count p2deck)
-          newpastgames (conj pastgames {:p1 p1deck :p2 p2deck} )
+          newpastgames (conj pastgames (list p1deck p2deck))
           ]
       (cond
-
+        (pastgames (list p1deck p2deck)) [p1deck :p1 turn]
         (empty? p1deck) [p2deck :p2 turn]
         (empty? p2deck) [p1deck :p1 turn]
-        (some (fn [x] (= {:p1 p1deck :p2 p2deck} x)) pastgames) [p1deck :p1 turn]
-        (and (>= p1count p1) (>= p2count p2))
-        (let [[cards winner turn] (recur-combat (take p1 p1s) (take p2 p2s) [])]
+        (and (> p1count p1) (> p2count p2))
+        (let [[cards winner turn] (recur-combat (take p1 p1s) (take p2 p2s) #{})]
           (if (= winner :p1)
             (recur (concat p1s [p1 p2]) p2s (inc turn ) newpastgames)
             (recur p1s (concat p2s  [p2 p1]) (inc turn) newpastgames)
@@ -63,3 +62,8 @@
         (> p1 p2) (recur (concat p1s [p1 p2]) p2s (inc turn) newpastgames)
         :else  (recur p1s (concat p2s  [p2 p1]) (inc turn) newpastgames)
         ))))
+
+(def part2-game-result (recur-combat p1 p2 #{}))
+(def part2-ans (apply + (map * (first part2-game-result) (range (count (first part2-game-result)) 0 -1))))
+(println part2-ans)
+;; 35154
