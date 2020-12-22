@@ -1,6 +1,7 @@
 (ns day22
   (:require [clojure.java.io :as io]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [hashp.core]))
 
 (def raw-data  (-> "sample22.dat"
                    io/resource
@@ -19,12 +20,46 @@
              ))
 
 (defn play [p1deck p2deck]
-  (loop [p1 (first p1deck) p1s (rest p2deck)
-         p2 (first p2deck) p2s (rest p2deck)
-         turn 0
-         ]
-    (cond (nil? p1) [p2s turn :two]
-          (nil? p2) [p1s turn :one]
-          
-          )
-    ))
+  (loop [p1deck p1deck p2deck p2deck turn 0]
+    (let [p1 (first p1deck)
+          p1s (rest p1deck)
+          p2 (first p2deck)
+          p2s (rest p2deck)
+          ]
+      (cond (empty? p1deck) [p2deck turn :two]
+            (empty? p2deck) [p1deck turn :one]
+            (> p1 p2) (recur (concat p1s [p1 p2]) p2s (inc turn))
+            :else  (recur p1s (concat p2s  [p2 p1]) (inc turn))
+            ))))
+
+(def part1-game-result (play p1 p2))
+(def part1-ans (apply + (map * (first part1-game-result) (range (count (first part1-game-result)) 0 -1))))
+
+
+
+(defn recur-combat [p1deck p2deck pastgames]
+  (loop [p1deck p1deck p2deck p2deck turn 0 pastgames pastgames]
+    (let [p1 (first p1deck)
+          p1s (rest p1deck)
+          p1count (count p1deck)
+          p2 (first p2deck)
+          p2s (rest p2deck)
+          p2count (count p2deck)
+          newpastgames (conj pastgames {:p1 p1deck :p2 p2deck} )
+          ]
+      (cond
+
+        (empty? p1deck) [p2deck :p2 turn]
+        (empty? p2deck) [p1deck :p1 turn]
+        (some (fn [x] (= {:p1 p1deck :p2 p2deck} x)) pastgames) [p1deck :p1 turn]
+        (and (>= p1count p1) (>= p2count p2))
+        (let [[cards winner turn] (recur-combat (take p1 p1s) (take p2 p2s) [])]
+          (if (= winner :p1)
+            (recur (concat p1s [p1 p2]) p2s (inc turn ) newpastgames)
+            (recur p1s (concat p2s  [p2 p1]) (inc turn) newpastgames)
+            
+            )
+        )
+        (> p1 p2) (recur (concat p1s [p1 p2]) p2s (inc turn) newpastgames)
+        :else  (recur p1s (concat p2s  [p2 p1]) (inc turn) newpastgames)
+        ))))

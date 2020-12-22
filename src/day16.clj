@@ -136,7 +136,7 @@
            :departure-date
            ])
 
-(def s (solver sorted-prereqs))
+(def s (solver sortqed-prereqs))
 
 (def part2-ans (apply * (->> fields
                              (map #(% s))
