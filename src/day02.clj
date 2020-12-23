@@ -31,7 +31,7 @@
 
 
 
-(def part1-passwords (map check-password-part1 data))
+(def part1-passwords (map check-password-part1 (take 5 data)))
 (def part1 (count (filter true? passwords)))
 
 (defn check-password-part2 [{:keys [min max letter password ]:as line}]

@@ -1,5 +1,7 @@
 {:deps { org.clojure/core.async {:mvn/version "0.6.532"}
         hashp {:mvn/version "0.1.0"}
+        org.clojure/math.numeric-tower {:mvn/version "0.0.4"}
+        instaparse/instaparse {:mvn/version "1.4.10"}        
         }
  
  :paths ["src" "data"]
