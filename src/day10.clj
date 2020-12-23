@@ -73,11 +73,16 @@
     )
   )
 
-(defn traverse [g current]
-  (let [neighbors  (get g current [])]
-    (if (empty? neighbors) 0
-         (reduce + (map  #(traverse g % ) neighbors))
-         )
+(def ways (atom {}))
 
-    )
-  )
+(def fmap (data->map data))
+(def rmap (data->reverse-map data))
+
+(map (fn [item]
+     (let [w (get @ways item 1)
+           n (get fmap item)
+           nextsteps (map #(get @ways %) n)
+           ]
+       n
+       )) data)
+     
