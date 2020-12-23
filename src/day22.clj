@@ -65,5 +65,10 @@
 
 (def part2-game-result (recur-combat p1 p2 #{}))
 (def part2-ans (apply + (map * (first part2-game-result) (range (count (first part2-game-result)) 0 -1))))
-(println part2-ans)
+
 ;; 35154
+
+(defn -main [x]
+(println part2-ans)
+  )
+

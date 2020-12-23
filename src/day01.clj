@@ -22,6 +22,7 @@
 
 (def part2-numbers-again (set  (filter  (fn [x]  (some #(= (- 2020 x) %) twosum)) data)))
 (def part2-again (reduce * part2-numbers-again))
+(println "HELLO")
 
 (comment list comprehension version
 (for [i data
