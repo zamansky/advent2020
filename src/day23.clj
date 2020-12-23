@@ -52,11 +52,6 @@
 
 
 
- (def state2-dict
-   (-> (reduce (fn  [state [k v]] (assoc state k v )) {} (partition 2 1 state2))
-        (assoc  (last state2) (first state2))
-        ))
-
 
 (defn part2-find-next [current  removed]
     (loop [dest (dec  current)]
@@ -94,13 +89,18 @@
 
 (def restoflist (range 10 1000001))
 (def state2 (concat state restoflist))
+ (def state2-dict
+   (-> (reduce (fn  [state [k v]] (assoc state k v )) {} (partition 2 1 state2))
+        (assoc  (last state2) (first state2))
+        ))
+
 
 (def z (part2 state2-dict 4 10000000))
 
 (def part2-ans  (* (z 1) (z (z 1))))
 
 (defn -main []
-  (let [z (part2 state2 3 10000000)]
+  (let [z (part2 state2-dict 4 10000000)]
     (println (z 1)))
     )
 
