@@ -12,7 +12,7 @@
         ] 
   [ingredients  allergens]))
 
-(def data  (->> "sample21.dat"
+(def data  (->> "day21.dat"
                io/resource
                slurp
                (str/split-lines)
@@ -53,5 +53,32 @@
 (def d (map (fn [ [i a]]
               [ (set i) (set a)]) data))
 
+(def allergy-candidates (for [a allergens]
+  [a  (reduce set/intersection (keep #(if ((second %) a) (first %)) d))]
+  ))
 
-  )
+
+(def zset (reduce set/union (map second allergy-candidates)))
+
+(apply +(map #(count (set/difference (first %) zset)) d))
+
+
+(def part2-raw (loop [ss []
+                      candidates (sort-by (comp count second) allergy-candidates)
+                      ]
+                 (let [next (first candidates)
+                       nextcandidates1 (rest candidates)
+                       to-remove (second next)
+                       nextcandidates (map #(assoc % 1 (set/difference (nth % 1) to-remove)) nextcandidates1)
+                       ]
+                   (if (nil? next) ss
+                       (recur  (concat ss [next])
+                               (sort-by (comp count second) nextcandidates)
+                               )
+                       ))))
+
+(def part2-2 (map (fn [[a b]] [a (first b)] )part2-raw))
+
+(def part2-sorted (sort-by  first part2-2))
+
+(def part2-ans (str/join "," (map second part2-sorted)))
