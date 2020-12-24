@@ -1,7 +1,8 @@
 (ns day21
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.set :as set]))
+            [clojure.set :as set]
+            [hashp.core]))
 
 
 (defn parse-line [line]
@@ -39,9 +40,18 @@
 
 (def allersets (into {} (map (fn [[k v]] [k (set v)]) allersets1)))
 
-(set/intersection (get allersets "dairy") (get allersets "fish"))
 
-(map (fn [food]
-       (reduce (fn [aset [k v]] ) #{} allersets)
+(def foodsets1 (reduce (fn [dict [ing aler]]
+                         (loop [dict dict i (first ing) is (rest ing)]
+                           (cond (nil? i) dict
+                                 :else (recur (update dict i into aler) (first is) (rest is))
+                                 ))){} data))
 
-       ))
+(def foodsets (into {} (map (fn [[k v]] [k (set v)]) foodsets1)))
+
+
+(def d (map (fn [ [i a]]
+              [ (set i) (set a)]) data))
+
+
+  )
