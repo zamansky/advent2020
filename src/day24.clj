@@ -29,9 +29,9 @@
 
 (def tile-loc (parse-line line))
 (defn get-tile-location [steps]
-(reduce (fn [loc step]
-          (map + loc (deltas  step))
-          ) [0 0] steps))
+  (reduce (fn [loc step]
+            (map + loc (deltas  step))
+            ) [0 0] steps))
 
 (defn flip-tile [tiles loc]
   (if (=  (get tiles loc 0) 0)
@@ -52,7 +52,7 @@
 
 (defn get-neighbor-coords [loc]
     (map  #(map + loc %) (vals deltas))
-    ))
+    )
 
 (defn get-all-neighbor-coords [world]
   (reduce (fn [s n]
